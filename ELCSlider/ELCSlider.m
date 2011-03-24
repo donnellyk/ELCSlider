@@ -12,11 +12,13 @@
 @implementation ELCSlider
 
 -(id)initWithCoder:(NSCoder *)aDecoder {
-
-	if(self = [super initWithCoder:aDecoder]) {
+    
+	if((self = [super initWithCoder:aDecoder])) {
         
 		[self addTarget:self action:@selector(valueChanged) forControlEvents:UIControlEventValueChanged];
-		
+		[self addTarget:self action:@selector(touchUp) forControlEvents:UIControlEventTouchUpInside];
+		[self addTarget:self action:@selector(touchUp) forControlEvents:UIControlEventTouchUpOutside];
+        
 		sliderValueController = [[SliderValueViewController alloc] initWithNibName:@"SliderValueViewController" bundle:[NSBundle mainBundle]];
 		popoverController = [[UIPopoverController alloc] initWithContentViewController:sliderValueController];
 		[popoverController setPopoverContentSize:sliderValueController.view.frame.size];
@@ -35,7 +37,7 @@
 	CGFloat sliderValue = self.value;
 	
 	if(sliderMin < 0.0) {
-
+        
 		sliderValue = self.value-sliderMin;
 		sliderMax = sliderMax - sliderMin;
 		sliderMin = 0.0;
@@ -63,17 +65,22 @@
 		
 		xCoord = xCoord + sliderValue;
 	}
-
+    
 	[popoverController presentPopoverFromRect:CGRectMake(xCoord, 0, sliderValueController.view.frame.size.width, sliderValueController.view.frame.size.height) inView:self permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+-(void)touchUp {
+	[popoverController dismissPopoverAnimated:YES];
 }
-*/
+
+
+/*
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect {
+ // Drawing code
+ }
+ */
 
 - (void)dealloc {
     [super dealloc];
